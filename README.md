@@ -3,4 +3,4 @@ Repostre Facebook Extension (Chrome)
 
 
 
-![Screenshot](https://raw.github.com/HackersAndHustlers/fb-chrome-extension/master/screenshot.png)
+![Screenshot](https://github.com/maxdosh/Repostre-ChromeExtension/blob/master/screenshot.PNG)
