@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<style type="text/css">
+		body {
+			background: #EFEFEF;
+			width: 400px;
+			height : 800 px;
+		}
+
+		.title {
+			text-align: center;
+		}
+
+		.button {
+			cursor: pointer;
+			text-align: center;
+			padding: 3px 3px;
+			font-family: sans-serif;
+			font-size: 1.2em;
+			margin-top: 1px;
+		}
+
+		.button:hover {
+			background: #A9A9A9;
+		}	
+	</style>
+	<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="popup.css" />
+</head>
+<style>
+    #divLoading.show {
+        display: block;
+        position: fixed;
+        z-index: 9999;
+        opacity: 0.9;
+        background: #ffffff url('spinner.gif') no-repeat center;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        top: 0;
+    }</style>
+
+
+
+<body>
+	<img src="/icons/Repostre.jpg"  style="float:left;" />
+	<h3 class="title" >Repostre
+		<img src="/icons/settings.jpg"  style="float:right;" />
+		<img src="/icons/help.png"  style="float:right;" />
+
+		</h3>
+	<hr>
+	<div class="col-lg-10 col-lg-offset-2">
+		<h4 class="filter"> Filter By     
+		<img src ="/icons/like.png" onclick="sortPostsbyLikes();" align="right" />
+		<img src ="/icons/comment.jpg" onclick="sortPostsbyComments();" align="right" />
+		</h4>
+	</div>
+
+
+<script src="ExtPay.js"></script>	
+<script src="popup.js"></script>
+
+
+</body >
+</html >
