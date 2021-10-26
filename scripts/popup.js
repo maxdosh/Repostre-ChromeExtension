@@ -1,4 +1,4 @@
-const extpay = ExtPay('bnifpmedbhipajiejffnihgcpknknjoo') ;
+//const extpay = ExtPay('bnifpmedbhipajiejffnihgcpknknjoo') ;
 
 
 function getFacebookPageFeedUrl(base_url) {
@@ -92,15 +92,80 @@ function getDataLoad(dataLoad){
 
 		return objUsersIdPosts;
 }
-function getPostsfromGroup(group_id, access_token, limitTime) {
+
+
+
+
+
+
+function getPostsfromGroup(group_id, access_token) {
+	
 console.log("Inside getPostsfromGroup");
+
 	const xhr = new XMLHttpRequest();
 	var base = "https://graph.facebook.com"
 	var node = "/" + group_id + "/feed?fields=link,caption,message,message_tags,created_time.summary(true),comments.summary(true).limit(50){message},reactions.limit(0).summary(true)&access_token=";
-	//var feed = "?fields=message,id,likes.limit(0).summary(total_count)";
-	//var parameters = "/?limit=100&access_token=" + access_token;
 	var base_url = base + node + access_token; 
-	console.log("base_url is : " + base_url);
+	console.log("base_url from groups is : " + base_url);
+	xhr.open('GET', base_url, true);
+	xhr.setRequestHeader('Accept', 'application/json');
+	xhr.send(null);
+	 objUsersIdPosts = new Map();
+	xhr.onreadystatechange = () => {
+	if (xhr.readyState === XMLHttpRequest.DONE) {
+		
+		var dataLoad = []
+		dataLoad = JSON.parse(xhr.responseText);
+		 objUsersIdPosts = getDataLoad(dataLoad);
+		
+	
+	for (let [key, value] of objUsersIdPosts) {
+			
+	console.log(key + " = " + value);
+
+	 	const li = document.createElement("li");
+		const listDiv = document.createElement("div");
+		if(value[0] !== "undefined" && value[0] !== null && value[0] !== undefined){
+		listDiv.innerHTML= value[0];
+		const listText = document.createElement("div");
+		var img1 = document.createElement('img');
+		img1.src ='/icons/reactions.png';
+		var span1 = document.createElement('span');
+		span1.innerHTML = value[1];
+		var img2 = document.createElement('img');
+		img2.src='/icons/comment2.png';
+		var span2= document.createElement('span');
+		span2.innerHTML = value[2];
+		listText.appendChild(img1);
+		listText.appendChild(span1);
+		listText.appendChild(img2);
+		listText.appendChild(span2);	
+		var hr = document.createElement("HR");
+		listText.appendChild(hr);
+
+		listDiv.appendChild(listText);
+		li.appendChild(listDiv);
+
+			
+		document.querySelector("ul").appendChild(li);
+		}
+			}
+			console.log("objUsersIdPosts size 1: "+objUsersIdPosts.size);
+			return objUsersIdPosts;
+};
+
+}
+
+}
+
+function getPostsFromPage(pageID, access_token){
+
+	console.log("Inside getPostsfromGroup");
+	const xhr = new XMLHttpRequest();
+	var base = "https://graph.facebook.com"
+	var node = "/" + pageID + "/feed?fields=link,caption,message,message_tags,created_time.summary(true),comments.summary(true).limit(50){message},reactions.limit(0).summary(true)&access_token=";
+	var base_url = base + node + access_token; 
+	console.log("base_url from Pages is : " + base_url);
 	xhr.open('GET', base_url, true);
 	xhr.setRequestHeader('Accept', 'application/json');
 	xhr.send(null);
@@ -110,270 +175,119 @@ console.log("Inside getPostsfromGroup");
 		var objUsersIdPosts = new Map();
 		var dataLoad = []
 		dataLoad = JSON.parse(xhr.responseText);
-		
 		objUsersIdPosts = getDataLoad(dataLoad);
 
-	var jqueryScript = document.createElement('script');
-	jqueryScript.src = 'https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js';
-	script.type = 'text/javascript';
-	document.body.appendChild(jqueryScript);
-	
-	var divScreen = document.createElement('div');
- 	let modal = `
- 	<img src="/icons/Repostre.jpg"  style="float:left;" />
-	<h3 class="title" >Repostre
-		<img src="/icons/settings.jpg"  style="float:right;" />
-		<img src="/icons/help.png"  style="float:right;" />
-
-		</h3>
-	<hr>
-	<div class="col-lg-10 col-lg-offset-2">
-		<h4 class="filter"> Filter By     
-		<img src ="/icons/like.png" onclick="sortPostsbyLikes();" align="right" />
-		<img src ="/icons/comment.png" onclick="sortPostsbyComments();" align="right" />
-		</h4>
-	</div>
-	 `
-	divScreen.innerHTML = modal ; 
-	document.body.appendChild(divScreen);
-
-	var styleSheet = document.createElement('style');
-	let styleModal = `
-	style type="text/css">
-
-		/* width */
-		::-webkit-scrollbar {
-		width: 20px;
-		}
-
-		/* Track */
-		::-webkit-scrollbar-track {
-		box-shadow: inset 0 0 5px grey; 
-		border-radius: 10px;
-		}
-		
-		/* Handle */
-		::-webkit-scrollbar-thumb {
-		background: red; 
-		border-radius: 10px;
-		}
-
-		/* Handle on hover */
-		::-webkit-scrollbar-thumb:hover {
-		background: #b30000; 
-		}
-		body {
-			background: #EFEFEF;
-			width: 400px;
-			height : 800 px;
-		}
-
-		.title {
-			text-align: center;
-		}
-
-		.button {
-			cursor: pointer;
-			text-align: center;
-			padding: 3px 3px;
-			font-family: sans-serif;
-			font-size: 1.2em;
-			margin-top: 1px;
-		}
-
-		.button:hover {
-			background: #A9A9A9;
-		}	
-	</style>
-	`
-	styleSheet.innerHTML = styleModal;
-	document.body.appendChild(styleSheet);
-		
-	
 	console.log("objUsersIdPosts.length() : "+objUsersIdPosts.size);
-		for (let [key, value] of objUsersIdPosts) {
+
+	
+	
+	for (let [key, value] of objUsersIdPosts) {
 			
-			console.log(key + " = " + value);
-			var divPost = document.createElement('div');
-			divPost.className = 'border pad';
-			divPost.innerHTML = value[0];
-			var divLikeCommentCount = document.createElement('div');
-			divLikeCommentCount.className = 'border pad';
-			var likeCount = value[1];
-			var commentCount = value[2];
-			let likeCommentModal = `
-			<img src ="/icons/reactions.png"/> 
-			<span id="likeCountId"></span>
-			<img src ="/icons/comment.png"/> 
-			<span id="commentCountId"></span>
-			`
+	console.log(key + " = " + value);
+
+	 	const li = document.createElement("li");
+		const listDiv = document.createElement("div");
+		if(value[0] !== "undefined" && value[0] !== null && value[0] !== undefined){
+		listDiv.innerHTML= value[0];
+		const listText = document.createElement("div");
+		var img1 = document.createElement('img');
+		img1.src ='/icons/reactions.png';
+		var span1 = document.createElement('span');
+		span1.innerHTML = value[1];
+		var img2 = document.createElement('img');
+		img2.src='/icons/comment.png';
+		var span2= document.createElement('span');
+		span2.innerHTML = value[2];
+		listText.appendChild(img1);
+		listText.appendChild(span1);
+		listText.appendChild(img2);
+		listText.appendChild(span2);	
 		
-			divLikeCommentCount.innerHTML=likeCommentModal;
-			divPost.appendChild(divLikeCommentCount);
+		
+		listDiv.appendChild(listText);
+		li.appendChild(listDiv);
 
 			
-			
-			if(document.getElementById("likeCountId").innerHTML !== null && document.getElementById("commentCountId").innerHTML !==null){
-				console.log("into this if!");
-				
-			document.getElementById("likeCountId").innerHTML = likeCount;
-			document.getElementById("commentCountId").innerHTML = commentCount;
-			console.log(document.getElementById("likeCountId").innerHTML);
-			console.log(document.getElementById("commentCountId").innerHTML);
-			} 
-			
-		if(divPost.innerHTML !== undefined && divPost.innerHTML !== null){
-			document.body.appendChild(divPost);
-			}
+		document.querySelector("ul").appendChild(li);
 		}
-		
-
-	}
-	};
+			}
 };
 
 
+}
+}
 
-document.addEventListener('DOMContentLoaded', async () => {
-	
-	if(document.getElementById("clickMe") !== "undefined" && document.getElementById("clickMe") !== null){
-	document.getElementById("clickMe").onclick = function fun(){
-	
-		extpay.openTrialPage("3 days");
-		extpay.onTrialStarted;
-	}}
-	if(document.getElementById("license") !== "undefined" && document.getElementById("license") !== null){
-	document.getElementById("license").onclick = function licensefun(){
-		extpay.openPaymentPage();
-		
-	}}
 
-	extpay.getUser().then(user => {
-    if (user.paid) {
-		console.log("You're paid!");
-		document.write('<a href = "popup.html"></a>');
-		console.log("testing!!");
-		var access_token = "EAARExoIYazcBAKxFz7DjGzAa0TbjjlAQuldQKmvB7CWPI0hComYJRgSgV5dZCUdtdP4toOio6bcnRtR0o6ySML2CtZCFIAjjghfN4AY2IZCiE8RNbxUiqwlOUCBExND6LyX5oRN4XN2iX6ZBbiIzBNRlfmC8fYVrQPGcvYbWHLGm1adQazrBHFr53AdnEgQMHvDoE0snOgZDZD";
-		var limitTime = "31536000000";
+function sortPostsbyLikes(groupID, access_token, results) {
+console.log("Inside sortPostsbyLikes"); 
+ 
+for (let [key, value] of results) {
+	
+	console.log(key + " = " + value);
+}
+}
+
+
+
+
+document.addEventListener('DOMContentLoaded',  () => {
+
+console.log("testing!!");
+	var access_token = "EAAOZBItChqO0BAGxn2I0f93lZAdoFS0an5jjt71NXeLZCEJPUAX2UdqVCYpEbIM0XyYM4T5P9hYCeiH6nwNdZA0MDooRdFpoV0kCMU2VUnMlXmtdcBZA64bPosGZB6nwLNNAoGZCAZBNM7dsuCmeLqKbge5zETMo32NoXbjpUr3jVZCZA0Wvbg1v4J";
+		var limitTime = "31536000000"; var groupID; var results = new Map();
 		chrome.tabs.query({ 'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT },
 		function (tabs) {
-		console.log(tabs[0].url.substring(32, 48));
-			var groupID = tabs[0].url.substring(32, 48);
-			getPostsfromGroup(groupID, access_token, limitTime);
+			if(tabs[0].url.indexOf('groups') !== -1){
+			console.log("into groups");
+			 groupID = tabs[0].url.substring(32, 48);
+			
+		//	var likesBoolean = 0; var commentsBoolean = 0; 
+			
+			
+		 results = getPostsfromGroup(groupID, access_token);
+		console.log("results size : "+results.size);
+	for (let [key, value] of results) {
+		console.log("results here in Main : "+value);
 		}
-	);
+			}
+			else if(tabs[0].url.indexOf('profile') !== -1){
+				console.log(tabs[0].url.indexOf('profile'));
+				console.log("into profiles!!");
+			}
+			else{
+				console.log("into pages!!");
+				var pageNameID = tabs[0].url.split('/')[3];
+				var pageID = pageNameID.split('-').reverse()[0];
+				console.log("pageID:" +pageID);
+				getPostsFromPage(pageID,access_token);
 
-
-    }
-	 else if (user.subscriptionStatus === 'past_due') {
-		document.querySelector('p').innerHTML ="You need to update your card! Click here to update : ";
-		var dueLink = document.createElement('a');
-		document.body.appendChild(dueLink);
-		document.getElementById("dueLink").onclick = function duefun(){
- 		extpay.openPaymentPage();
-		} 
-        console.log("You need to update your card!");
-       
-    } else if (user.subscriptionCancelAt && user.subscriptionCancelAt < new Date()) {
-		document.querySelector('p').innerHTML = "Your subscription will cancel soon. ";
-        console.log("Your subscription will cancel soon.")
-    } else if (user.subscriptionStatus === 'canceled') {
-		document.querySelector('p').innerHTML = "We hope you enjoyed your subscription!"
-        console.log("We hope you enjoyed your subscription!")
-    } else {
-		document.querySelector('p').innerHTML ="You haven't paid yet :(";
-        console.log("You haven't paid yet :( ")
-    }
-
-
-	}).catch(err => {
-
-   document.querySelector('p').innerHTML = err;
-	})
-
-
+			}
+			
+			 
+		})
+		
+		document.getElementById('likesLink').addEventListener('click', function() {
+			 console.log("Likes are clicked now!!!!");
+			 var likesBoolean = "1"; var commentsBoolean = "0" ;
+			 sortPostsbyLikes(groupID,access_token, results);
+			});
+	
+			
 });
 
 
-function hideSpinner() {
-	$('#divLoading').fadeOut(250, function () {
-		$('#divLoading').removeClass('show');
-	});
-}
-function showSpinner() {
-	$('#divLoading').fadeIn(250, function () {
-		$('#divLoading').addClass('show');
-	});
-}
-
-function request_until_succeed(url) {
-	var max_attempts = 3;
-	var attempts = 0;
-	var success = False;
-	while (success == False && attempts < max_attempts) {
-		attempts = attempts + 1;
-		response = requests.get(url)
-		if (response.status_code == 200) {
-			success = True;
-		} else {
-			// window.alert('Error for URL {'+&url + '} | {' + &datetime.datetime.now() +'} | attempt {' + &attempts +'} of {' +max_attempts +'}');
-			if (attempts == max_attempts) {
-				//  raise Exception('Failed after {} attempts | {}'.format(attempts, url))
-				window.alert("Failed after many attempts");
-			}
-		}
-		return response;
-	}
+	
 
 
-	//var data = request_until_succeed(url).json()
 
-	return data;
-
-}
-
-function sortPostsbyLikes(group_id) {
-	const xhr = new XMLHttpRequest();
-	var base = "https://graph.facebook.com"
-	var node_likes = "/" + group_id + "/feed?fields=link,caption,message,message_tags,reactions.limit(0).summary(true),comments.summary(true).limit(50){message},created_time&access_token=";
-	var access_token = "EAARExoIYazcBAKxFz7DjGzAa0TbjjlAQuldQKmvB7CWPI0hComYJRgSgV5dZCUdtdP4toOio6bcnRtR0o6ySML2CtZCFIAjjghfN4AY2IZCiE8RNbxUiqwlOUCBExND6LyX5oRN4XN2iX6ZBbiIzBNRlfmC8fYVrQPGcvYbWHLGm1adQazrBHFr53AdnEgQMHvDoE0snOgZDZD";
-	//var parameters = "?access_token=" + access_token;
-	var base_url = base + node_likes + access_token; 
-
-	console.log("base_url for likes is : " + base_url);
-	xhr.open('GET', base_url, true);
-	xhr.setRequestHeader('Accept', 'application/json');
-	xhr.send(null);
-
-	xhr.onreadystatechange = () => {
-	if (xhr.readyState === XMLHttpRequest.DONE) {
-		var objUsersIdPosts = new Map();
-		objUsersIdPosts = getDataLoad(xhr.responseText);
-
-		for (let [key, value] of objUsersIdPosts) {
-			
-			console.log(key + " = " + value);
-			var divPost = document.createElement('div');
-			divPost.className = 'border pad';
-			divPost.innerHTML = value;
-			if(divPost.innerHTML !=="undefined" && divPost.innerHTML !== null){
-			document.body.appendChild(divPost);
-			}
-		}
-
-	};
-
-
-}
-}
 
 
 
 function sortPostsbyComments(group_id) {
-		const xhr = new XMLHttpRequest();
+const xhr = new XMLHttpRequest();
 	var base = "https://graph.facebook.com"
 	var node_comments = "/" + group_id + "/feed?fields=link,caption,message,message_tags,comments.summary(true).limit(50){message},reactions.limit(0).summary(true),created_time&access_token=";
-	var access_token = "EAARExoIYazcBAKxFz7DjGzAa0TbjjlAQuldQKmvB7CWPI0hComYJRgSgV5dZCUdtdP4toOio6bcnRtR0o6ySML2CtZCFIAjjghfN4AY2IZCiE8RNbxUiqwlOUCBExND6LyX5oRN4XN2iX6ZBbiIzBNRlfmC8fYVrQPGcvYbWHLGm1adQazrBHFr53AdnEgQMHvDoE0snOgZDZD";
+	var access_token = "EAADQ04J7kUsBAFNIDeet7n9EATEXv2qbZCKBUWtJkjYxcW6B5fid1MnozExoEl25pKjZBBfyydqjO0f6UXwwLZBgwdEBbcTlGMEU7UisJ3iQHkyHpeI9uOIkGVdTQ825jLqrnordbrxWAa2WZAPuVXkPhO27PtMtGcT4TbUgiQZDZD";
 	//var parameters = "?access_token=" + access_token;
 	var base_url = base + node_comments + access_token; 
 
@@ -389,19 +303,16 @@ function sortPostsbyComments(group_id) {
 
 		for (let [key, value] of objUsersIdPosts) {
 			
-			console.log(key + " = " + value);
-			var divPost = document.createElement('div');
-			divPost.className = 'border pad';
-			divPost.innerHTML = value;
-			if(divPost.innerHTML !=="undefined" && divPost.innerHTML !== null){
-			document.body.appendChild(divPost);
-			}
+		divPost.innerHTML = value[0];
+
+
 		}
-
-	};
-
+	}
 
 
+};
 }
 
-}
+
+
+

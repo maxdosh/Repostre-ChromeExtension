@@ -1,15 +1,19 @@
 <html>
 
 <head>
-	<title>title</title>
+	<title>Repostre Chrome Extension</title>
+	<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<script src="ExtPay.js"></script>
 </head>
 
-<body>
+<body style="background-color:white;">
 	<style>
-	body {
+		body {
 			background: #EFEFEF;
 			width: 400px;
-			height : 300 px;
+			height: 300 px;
 		}
 
 		.title {
@@ -27,26 +31,15 @@
 
 		.button:hover {
 			background: #A9A9A9;
-		}	
+		}
 	</style>
-	<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
-	<header>
- <p style="font-size: 1.2rem;">Before exploring the extension , Please pay for the license you chose  </p>
- <button id="license"> Let me pay!</button>
-
-	</header>
-
+<p style="font-size: 1.2rem;">Before exploring the extension , Please pay for the license you chose </p>
+<button id="license"> Let me pay!</button>
 <div>
 <p style="font-size: 1.2rem;">Start your 3 days free trial? </p>
-
-
 <button id="clickMe">CLICK HERE</button>
 </div>
-
-<script src="ExtPay.js"></script>	
-<script src="popup.js"></script>
 
 </body>
 

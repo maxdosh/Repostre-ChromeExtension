@@ -1558,3 +1558,57 @@ You can copy and paste this to your manifest.json file to fix this error:
 	return ExtPay;
 
 }());
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+			const extpay = ExtPay('bnifpmedbhipajiejffnihgcpknknjoo');
+
+			//if(document.getElementById("clickMe") !== "undefined" && document.getElementById("clickMe") !== null){
+			document.getElementById("clickMe").onclick = function fun() {
+
+				extpay.openTrialPage("3 days");
+				extpay.onTrialStarted;
+			}
+			//	if(document.getElementById("license") !== "undefined" && document.getElementById("license") !== null){
+			document.getElementById("license").onclick = function licensefun() {
+				extpay.openPaymentPage();
+
+			}
+
+			
+	
+			extpay.getUser().then(user => {
+				if (user.paid) {
+					console.log("You're paid!");
+					//document.write("<a href = 'popup.html'></a>");
+					window.location.href='popup.html';
+
+				}
+				else if (user.subscriptionStatus === 'past_due') {
+					document.querySelector('p').innerHTML = "You need to update your card! Click here to update : ";
+					var dueLink = document.createElement('a');
+					document.body.appendChild(dueLink);
+					document.getElementById("dueLink").onclick = function duefun() {
+						extpay.openPaymentPage();
+					}
+					console.log("You need to update your card!");
+
+				} else if (user.subscriptionCancelAt && user.subscriptionCancelAt < new Date()) {
+					document.querySelector('p').innerHTML = "Your subscription will cancel soon. ";
+					console.log("Your subscription will cancel soon.")
+				} else if (user.subscriptionStatus === 'canceled') {
+					document.querySelector('p').innerHTML = "We hope you enjoyed your subscription!"
+					console.log("We hope you enjoyed your subscription!")
+				} else {
+					document.querySelector('p').innerHTML = "You haven't paid yet :(";
+					console.log("You haven't paid yet :( ")
+				}
+
+
+			}).catch(err => {
+
+				document.querySelector('p').innerHTML = err;
+			})
+
+		});
+		
