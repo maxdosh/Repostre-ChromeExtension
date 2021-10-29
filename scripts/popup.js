@@ -41,7 +41,7 @@ function getObjs(dataLoad, objMap) {
 				//if (typeof dataLoad.data[i].from !== "undefined" && dataLoad.data[i].from !== null) {
 					//console.log(formatDateTime(dataLoad.data[i].created_time) + " second -> OK | " + dataLoad.data[i].from.name + " | " + dataLoad.data[i].from.id + " | " + dataLoad.data[i].id + " | 3");
 					//obj[0].push(dataLoad.data[i].id);
-					objMap.set(dataLoad.data[i].id,[dataLoad.data[i].message,dataLoad.data[i].reactions.summary.total_count,dataLoad.data[i].comments.summary.total_count]);
+					objMap.set(dataLoad.data[i].id,[dataLoad.data[i].message,dataLoad.data[i].reactions.summary.total_count,dataLoad.data[i].comments.summary.total_count, dataLoad.data[i].created_time]);
 				//}
 			//}
 		}
@@ -94,52 +94,69 @@ function getDataLoad(dataLoad){
 }
 
 
-
-
+function mycallback(data){
+	console.log("into callback!!");
+	console.log("data: "+data);
+	var dataResult = new Map();
+	dataResult = data;
+	return dataResult;
+}
 
 
 function getPostsfromGroup(group_id, access_token) {
 	
 console.log("Inside getPostsfromGroup");
 
-	const xhr = new XMLHttpRequest();
+	const xhr = new XMLHttpRequest();objUsersIdPosts = new Map();
 	var base = "https://graph.facebook.com"
 	var node = "/" + group_id + "/feed?fields=link,caption,message,message_tags,created_time.summary(true),comments.summary(true).limit(50){message},reactions.limit(0).summary(true)&access_token=";
 	var base_url = base + node + access_token; 
 	console.log("base_url from groups is : " + base_url);
-	xhr.open('GET', base_url, true);
-	xhr.setRequestHeader('Accept', 'application/json');
-	xhr.send(null);
-	 objUsersIdPosts = new Map();
+	
+	
+
+	
 	xhr.onreadystatechange = () => {
 	if (xhr.readyState === XMLHttpRequest.DONE) {
-		
+		 
 		var dataLoad = []
 		dataLoad = JSON.parse(xhr.responseText);
 		 objUsersIdPosts = getDataLoad(dataLoad);
-		
-	
+	xhr.onload = function() {
+		mycallback(objUsersIdPosts);
+		}
+		 
 	for (let [key, value] of objUsersIdPosts) {
 			
 	console.log(key + " = " + value);
 
 	 	const li = document.createElement("li");
+		li.setAttribute("class","liClass")
 		const listDiv = document.createElement("div");
+		listDiv.setAttribute("class","wholeDiv");
 		if(value[0] !== "undefined" && value[0] !== null && value[0] !== undefined){
 		listDiv.innerHTML= value[0];
 		const listText = document.createElement("div");
 		var img1 = document.createElement('img');
 		img1.src ='/icons/reactions.png';
 		var span1 = document.createElement('span');
+		span1.setAttribute("class","dataSort1");
 		span1.innerHTML = value[1];
+		var spanhidden = document.createElement('span');
+		spanhidden.setAttribute("class","dataSort3");
+		//spanhidden.style.visibility= "hidden";
+		//spanhidden.style.display = "none";
+		spanhidden.innerHTML = value[3];
 		var img2 = document.createElement('img');
 		img2.src='/icons/comment2.png';
 		var span2= document.createElement('span');
+		span2.setAttribute("class","dataSort2");
 		span2.innerHTML = value[2];
 		listText.appendChild(img1);
 		listText.appendChild(span1);
 		listText.appendChild(img2);
-		listText.appendChild(span2);	
+		listText.appendChild(span2);
+		listText.appendChild(spanhidden);	
 		var hr = document.createElement("HR");
 		listText.appendChild(hr);
 
@@ -150,13 +167,39 @@ console.log("Inside getPostsfromGroup");
 		document.querySelector("ul").appendChild(li);
 		}
 			}
-			console.log("objUsersIdPosts size 1: "+objUsersIdPosts.size);
-			return objUsersIdPosts;
+			
+		
 };
 
 }
+xhr.open('GET', base_url, true);
+xhr.setRequestHeader('Accept', 'application/json');
+xhr.send();
 
 }
+
+ function comparator(a, b) {
+            if (a.dataset.subject < b.dataset.subject)
+                return -1;
+            if (a.dataset.subject > b.dataset.subject)
+                return 1;
+            return 0;
+        }
+
+//Function to sort posts based on likes
+//function sortDataByLikes() {
+//	console.log("called sortDatabyLikes!!!");
+//var $wrap = $('.outer');
+ //               $wrap.find('.child').sort(function(a, b) 
+  //              {
+  //                  return + a.getAttribute('dataSort') - 
+  //                  +b.getAttribute('dataSort');
+  //              })
+  //              .appendTo($wrap);
+                
+//	return true;
+ //    }
+
 
 function getPostsFromPage(pageID, access_token){
 
@@ -194,9 +237,11 @@ function getPostsFromPage(pageID, access_token){
 		img1.src ='/icons/reactions.png';
 		var span1 = document.createElement('span');
 		span1.innerHTML = value[1];
+		span1.setAttribute("class","dataSort1")
 		var img2 = document.createElement('img');
 		img2.src='/icons/comment.png';
 		var span2= document.createElement('span');
+		span2.setAttribute("class","dataSort2")
 		span2.innerHTML = value[2];
 		listText.appendChild(img1);
 		listText.appendChild(span1);
@@ -217,26 +262,34 @@ function getPostsFromPage(pageID, access_token){
 }
 }
 
+ function formatDate(date){
 
-function sortPostsbyLikes(groupID, access_token, results) {
-console.log("Inside sortPostsbyLikes"); 
- 
-for (let [key, value] of results) {
-	
-	console.log(key + " = " + value);
-}
-}
+    var dd = date.getDate();
+    var mm = date.getMonth()+1;
+    var yyyy = date.getFullYear();
+    if(dd<10) {dd='0'+dd}
+    if(mm<10) {mm='0'+mm}
+    date = mm+'/'+dd+'/'+yyyy;
+    return date
+ }
 
 
 
 
-document.addEventListener('DOMContentLoaded',  () => {
 
-console.log("testing!!");
-	var access_token = "EAAOZBItChqO0BAGxn2I0f93lZAdoFS0an5jjt71NXeLZCEJPUAX2UdqVCYpEbIM0XyYM4T5P9hYCeiH6nwNdZA0MDooRdFpoV0kCMU2VUnMlXmtdcBZA64bPosGZB6nwLNNAoGZCAZBNM7dsuCmeLqKbge5zETMo32NoXbjpUr3jVZCZA0Wvbg1v4J";
+document.onreadystatechange = function () {
+	console.log("document state :"+document.readyState);
+if (document.readyState === 'complete') {
+  // The page is fully loaded
+console.log("testing!!  ");
+	var access_token = "EAARExoIYazcBAAvoiYx45DkHrQJFrIehc0uWc7Li8uYaUW5OAR481irvCmFy79BHXcfug5bRYNXE2qyayZAZBvGJa8vxGut0oxzoi7HVfLCwPrIx9ggwS5qPqAT7OCrj6jlhGF2y1ZAp26RFblFJMGf6DFTLzFvfapsBnLAYQZDZD";
+	console.log("Below access-token!!");
 		var limitTime = "31536000000"; var groupID; var results = new Map();
+		console.log("below variable def!! :" +chrome.tabs.getCurrent);
+
 		chrome.tabs.query({ 'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT },
 		function (tabs) {
+			console.log("before checking tabs!!: "+tabs[0].id);
 			if(tabs[0].url.indexOf('groups') !== -1){
 			console.log("into groups");
 			 groupID = tabs[0].url.substring(32, 48);
@@ -244,11 +297,8 @@ console.log("testing!!");
 		//	var likesBoolean = 0; var commentsBoolean = 0; 
 			
 			
-		 results = getPostsfromGroup(groupID, access_token);
-		console.log("results size : "+results.size);
-	for (let [key, value] of results) {
-		console.log("results here in Main : "+value);
-		}
+			 getPostsfromGroup(groupID, access_token);
+	
 			}
 			else if(tabs[0].url.indexOf('profile') !== -1){
 				console.log(tabs[0].url.indexOf('profile'));
@@ -266,28 +316,118 @@ console.log("testing!!");
 			 
 		})
 		
-		document.getElementById('likesLink').addEventListener('click', function() {
-			 console.log("Likes are clicked now!!!!");
-			 var likesBoolean = "1"; var commentsBoolean = "0" ;
-			 sortPostsbyLikes(groupID,access_token, results);
-			});
-	
+		
+		
+						//document.getElementById("likesID").addEventListener('click', function() {
+			$('#likesID').click(function(){			
 			
-});
+			 console.log("Likes are clicked now!!!!");
+				var cont = $(".listContainer");
+				var arr = $.makeArray(cont.children(".liClass"));
+				
+				arr.sort(function(a, b) {
+  				var textA = +$(a).find(".dataSort1").text();
+  				var textB = +$(b).find(".dataSort1").text();
 
+  				if (textA > textB) return 1;
+  				if (textA < textB) return -1;
 
+  				return 0;
+				});
+
+				cont.empty();
+
+				$.each(arr, function() {
+    			cont.append(this);
+				});
+				
+		
+		});
+		
+		
+		$('#commentsID').click(function(){			
+			
+			 console.log("Comments are clicked now!!!!"); 
+				var cont = $(".listContainer");
+				var arr = $.makeArray(cont.children(".liClass"));
+				
+				arr.sort(function(a, b) {
+  				var textA = +$(a).find(".dataSort2").text();
+  				var textB = +$(b).find(".dataSort2").text();
+
+  				if (textA > textB) return 1;
+  				if (textA < textB) return -1;
+
+  				return 0;
+				});
+
+				cont.empty();
+
+				$.each(arr, function() {
+    			cont.append(this);
+				});
+				
+		
+		});
+		
+$('#days7id').click(function(){	
+	console.log("7 days are clicked now!");
+	
+	var cont = $(".listContainer");
+	var arr = $.makeArray(cont.children(".liClass")); var datesArr = [];
+
+	for (var i=0; i<7; i++) {
+        var d = new Date();
+        d.setDate(d.getDate() - i);
+        datesArr.push( d )
+		
+		$.each(arr, function(a) {
+			
+		var textAA = $(a).find(".dataSort3").text();
+		if(datesArr[i] == textAA){
+			return 1;
+		}
+		else return -1;
+		
+		return 0;
+		});
+    }
+	
+	cont.empty();
+	
+	$.each(arr, function() {
+    			cont.append(this);
+				});
+	});
+
+$('#days30id').click(function(){	
+	
+	});
+	
+$('#months3id').click(function(){	
+	
+	});
+	
+$('#months6id').click(function(){	
+	
+	});
+	
+$('#yearid').click(function(){	
+	
+	});
 	
 
+		
+console.log("document.readyState 2 : "+document.readyState);
 
-
-
-
+}
+}
 
 function sortPostsbyComments(group_id) {
 const xhr = new XMLHttpRequest();
 	var base = "https://graph.facebook.com"
 	var node_comments = "/" + group_id + "/feed?fields=link,caption,message,message_tags,comments.summary(true).limit(50){message},reactions.limit(0).summary(true),created_time&access_token=";
-	var access_token = "EAADQ04J7kUsBAFNIDeet7n9EATEXv2qbZCKBUWtJkjYxcW6B5fid1MnozExoEl25pKjZBBfyydqjO0f6UXwwLZBgwdEBbcTlGMEU7UisJ3iQHkyHpeI9uOIkGVdTQ825jLqrnordbrxWAa2WZAPuVXkPhO27PtMtGcT4TbUgiQZDZD";
+	var access_token = "EAARExoIYazcBAAvoiYx45DkHrQJFrIehc0uWc7Li8uYaUW5OAR481irvCmFy79BHXcfug5bRYNXE2qyayZAZBvGJa8vxGut0oxzoi7HVfLCwPrIx9ggwS5qPqAT7OCrj6jlhGF2y1ZAp26RFblFJMGf6DFTLzFvfapsBnLAYQZDZD";
 	//var parameters = "?access_token=" + access_token;
 	var base_url = base + node_comments + access_token; 
 

@@ -36,5 +36,6 @@
 	   "https://repostre.com/support"
 	   
 
-]
+],
+"content_security_policy": "script-src 'self' https://code.jquery.com/; object-src 'self'"
 }

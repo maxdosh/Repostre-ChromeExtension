@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.plugin.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<meta charset="UTF-8" />
 	<style type="text/css">
 		body {
@@ -83,11 +82,11 @@ hr{
 	
 	<div class="newspaper">
 		<h4 style="text-align: center;" font="poppins;"> Filter By   
-		<a id="likesLink" href="#" target="_self"><img  src ="/icons/like.png" style="margin-right:5px" align="centre"></a>
-		<a href="popup.html" value="2" onclick="return getLikesCommentsBoolean(this.value);" target="_self"><img src ="/icons/comment1.png"  align="centre"></a>
+		<a  href="#" target="_self"><img  src ="/icons/like.png" style="margin-right:5px" align="centre"></a>
+		<a  href="#" target="_self"><img src ="/icons/comment1.png"  align="centre"></a>
 		
 		</h4><hr>
-		<ul style="list-style-type:none;"></ul>
+		<ul id="likesList" style="list-style-type:none;"></ul>
 	</div>
 
 </div>
