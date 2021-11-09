@@ -611,7 +611,7 @@ function sortPostsbyComments(group_id) {
 const xhr = new XMLHttpRequest();
 	var base = "https://graph.facebook.com"
 	var node_comments = "/" + group_id + "/feed?fields=link,caption,message,message_tags,comments.summary(true).limit(50){message},reactions.limit(0).summary(true),created_time&access_token=";
-	var access_token = "EAARExoIYazcBAEk2XCSSqDy0vauObHy0S0FeewpoIHPUlFFnHxCYudpoZBpmo7ZBn2ZA7cxAOyckDaTocj2NItfQ8NenO2ybjxVPCXZAo52eexeQovn5cQv1ivGMwNsEsPCbHFDj2Sus4m91Nzu44pbpBExZCLRnx5vZAfMhefPAx8ZAQDOIfuQbZCNy3HZChWIiuiWNOh3dQVU1awZAD7qyGZAePZCYGFOJVpJdlbSQnt4ngLE5ZAlbO4Xyf";
+	var access_token = "EAAZBfUsZCV6MQBAIQ0mAS3A6zmhZAGuIEytfaeAj1wpALH9NZAZCrrMiTbfpUBe9mXcecrzqFCzIEZC5TPZAGILflz75jsW6r0YLbgkUO7XZCRdTtQwIPLInSuzi5SLMIObBfUVR1KananUL2cvn4CvpvxuqAN3nkLlVJ1izVm9NjWQZBu1QktGmF2jzpm8JVFTUZD";
 	//var parameters = "?access_token=" + access_token;
 	var base_url = base + node_comments + access_token; 
 
